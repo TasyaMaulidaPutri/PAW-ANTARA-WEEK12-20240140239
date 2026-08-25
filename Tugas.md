@@ -1,8 +1,11 @@
 # Tugas Week 12 — Keamanan Web Dasar
 
 **Nama:** Tasya Maulida Putri
+
 **NIM:** 20240140239
+
 **Kelas:** A
+
 **Repo asal:** https://github.com/Kakonoomoide/PAW-ANTARA-WEEK12
 
 > Catatan cara baca dokumen ini: setiap bukti di bawah aslinya dijalanin & di-screenshot
