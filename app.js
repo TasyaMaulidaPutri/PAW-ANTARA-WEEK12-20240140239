@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth.routes');
 const searchRoutes = require('./routes/search.routes');
 const demoRoutes = require('./routes/demo.routes');
 const pageRoutes = require('./routes/page.routes');
+const commentRoutes = require('./routes/comment.routes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/', authRoutes);
 app.use('/', searchRoutes);
 app.use('/', demoRoutes);
 app.use('/', pageRoutes);
+app.use('/', commentRoutes); 
 
 const PORT = process.env.PORT || 3000;
 

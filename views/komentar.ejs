@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Komentar Produk (Bagian 2 — Implementasi Mandiri)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <header class="bg-white border-b border-gray-200 py-4 px-6 mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-bold text-gray-800">💬 Komentar Produk</h1>
+      <p class="text-sm text-gray-500">Halo, <%= username %> 👋 — halaman ini dibikin sendiri buat Bagian 2 tugas.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/demo" class="text-sm text-blue-600 underline">← balik ke hub demo</a>
+      <form method="POST" action="/logout">
+        <button class="text-sm text-red-600 font-medium">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 pb-10">
+    <div class="bg-blue-50 border border-blue-200 text-blue-800 text-sm rounded-lg px-4 py-3 mb-6">
+      Form ini <strong>divalidasi &amp; disanitasi di server</strong>
+      (<code>middlewares/validators.js</code> → <code>komentarValidationRules</code>),
+      disimpan pakai <strong>parameterized query</strong> (Sequelize <code>Comment.create()</code>),
+      dan ditampilkan lagi pakai <code>&lt;%= %&gt;</code> (auto-escape) — coba kirim
+      <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> di kolom komentar, gak bakal jalan.
+    </div>
+
+    <% if (errors.length > 0) { %>
+      <div class="bg-red-50 border border-red-300 text-red-700 text-sm rounded-lg px-4 py-3 mb-6">
+        <p class="font-semibold mb-1">❌ Ditolak server, ada yang gak valid:</p>
+        <ul class="list-disc list-inside space-y-0.5">
+          <% errors.forEach(function(err) { %>
+            <li><%= err %></li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+
+    <% if (before && after) { %>
+      <div class="bg-amber-50 border border-amber-300 text-amber-800 text-xs rounded-lg px-4 py-3 mb-6">
+        <p class="font-semibold mb-2">🧼 Bukti sanitasi (before → after, dari submit barusan):</p>
+        <p class="mb-1"><span class="font-mono">name</span>: "<%= before.name %>" → "<%= after.name %>"</p>
+        <p class="mb-1"><span class="font-mono">message</span>: "<%= before.message %>" → "<%= after.message %>"</p>
+      </div>
+    <% } %>
+
+    <form method="POST" action="/komentar" class="bg-white border border-gray-200 rounded-xl p-5 space-y-3 mb-8">
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Nama</label>
+        <input type="text" name="name" value="<%= old.name %>"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="cth: Budi Santoso" />
+      </div>
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Email</label>
+        <input type="text" name="email" value="<%= old.email %>"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="budi@email.com" />
+      </div>
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Komentar</label>
+        <textarea name="message" rows="3"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+          placeholder="Coba juga: <script>alert(1)</script> atau ' OR '1'='1"><%= old.message %></textarea>
+      </div>
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+        Kirim Komentar
+      </button>
+    </form>
+
+    <form method="GET" action="/komentar" class="flex gap-2 mb-4">
+      <input type="text" name="q" value="<%= query %>" placeholder="Cari komentar (nama/isi)..."
+        class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
+      <button class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-semibold">Cari</button>
+    </form>
+
+    <h2 class="text-sm font-semibold text-gray-600 mb-3"><%= comments.length %> komentar</h2>
+    <div class="space-y-3">
+      <% comments.forEach(function(c) { %>
+        <div class="bg-white border border-gray-200 rounded-xl p-4">
+          <!--
+            🛡️ #3 ESCAPE SAAT RENDER: pakai <%= %> (BUKAN <%- %>). Kalo
+            c.message isinya "<script>alert(1)</script>", yang tampil di
+            browser ya teks apa adanya (udah jadi &lt;script&gt;...), gak
+            pernah keeksekusi jadi kode.
+          -->
+          <p class="text-sm font-semibold text-gray-800"><%= c.name %> <span class="text-xs text-gray-400 font-normal">(<%= c.email %>)</span></p>
+          <p class="text-sm text-gray-600 mt-1"><%= c.message %></p>
+        </div>
+      <% }) %>
+      <% if (comments.length === 0) { %>
+        <p class="text-center text-gray-400 py-8">Belum ada komentar</p>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>

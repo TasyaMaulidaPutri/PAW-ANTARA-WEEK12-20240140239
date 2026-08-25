@@ -59,6 +59,37 @@ const sanitasiDemoRules = [
   body('email_input').optional({ checkFalsy: true }).trim().normalizeEmail(),
 ];
 
+const komentarValidationRules = [
+  body('name')
+    .trim()
+    .isLength({ min: 3, max: 50 })
+    .withMessage('Nama harus 3-50 karakter')
+    .matches(/^[a-zA-Z\s]+$/)
+    .withMessage('Nama cuma boleh huruf & spasi, gak boleh angka/simbol')
+    .escape(),
+
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Format email gak valid')
+    .normalizeEmail(),
+
+  body('message')
+    .trim()
+    .isLength({ min: 5, max: 300 })
+    .withMessage('Komentar harus 5-300 karakter')
+    .escape(),
+];
+
+const komentarSearchRules = [
+  query('q')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Kata pencarian maksimal 100 karakter')
+    .escape(),
+];
+
 /**
  * Middleware buat ngecek hasil validasi. Kalo ada error, dikumpulin
  * jadi array pesan yang gampang ditampilin ulang ke form.
@@ -77,5 +108,7 @@ module.exports = {
   loginValidationRules,
   searchValidationRules,
   sanitasiDemoRules,
+  komentarValidationRules, 
+  komentarSearchRules,
   handleValidationErrors,
 };
