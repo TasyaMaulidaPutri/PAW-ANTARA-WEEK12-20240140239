@@ -26,9 +26,7 @@ Setup: `cp .env.example .env`, set `ENABLE_VULN_DEMO=true`, `npm install`, `npm 
 | ✅ AMAN (`Op.iLike`, Sequelize) | parameterized, `q` dikirim terpisah dari query | **0 produk** — diperlakukan sebagai teks pencarian literal |
 | ⚠️ RENTAN (raw query) | `SELECT * FROM products WHERE name ILIKE '%${q}%'` → jadi `...ILIKE '%' OR '1'='1%'` | **5 produk (SEMUA produk)** — filter search berhasil di-bypass |
 
-```
 <img width="959" height="481" alt="Screenshot 2026-08-25 164743" src="https://github.com/user-attachments/assets/aaa66eb1-05fb-4ce5-9e98-df12290fa2ef" />
-```
 
 **Kenapa payload ini bisa tembus:** di `controllers/demo.unsafe.controller.js`
 fungsi `sqlInjectionDemo`, query rentan dibikin dengan **menyambung string SQL
@@ -53,9 +51,7 @@ query/prepared statement, jadi `q` selamanya cuma dianggap data, bukan kode SQL.
 
 **Payload:** `<script>alert('XSS dari '+document.cookie)</script>` di kotak input.
 
-```
 <img width="959" height="481" alt="Screenshot 2026-08-25 164743" src="https://github.com/user-attachments/assets/bcbee2a0-1120-4658-95d3-d289c5ef41e5" />
-```
 
 Potongan hasil render (dari kotak "Hasil di-render (unescaped)"):
 
@@ -81,9 +77,7 @@ diketik user langsung diteruskan ke view.
 **Cara reproduksi:** buka `/search-unsafe-demo`, search apa saja (mis. `a`)
 supaya semua produk termasuk produk demo ikut muncul.
 
-```
 <img width="959" height="470" alt="Screenshot 2026-08-25 164940" src="https://github.com/user-attachments/assets/28a672d9-c2b8-4b35-a2c9-9451c920e258" />
-```
 
 Potongan hasil render:
 
@@ -109,9 +103,7 @@ dari reflected XSS.
 
 **Payload:** `<img src=x onerror=alert(1)>`
 
-```
 <img width="958" height="475" alt="Screenshot 2026-08-25 164631" src="https://github.com/user-attachments/assets/9a13751e-f08c-476f-9485-d183eb8e9a8b" />
-```
 
 Potongan hasil render, dua cara berdampingan:
 
@@ -203,9 +195,7 @@ Hasil: **HTTP 400**, server menolak dan menampilkan pesan spesifik per field
 • Komentar harus 5-300 karakter
 ```
 
-```
 <img width="956" height="478" alt="Screenshot 2026-08-25 171222" src="https://github.com/user-attachments/assets/93997e1f-c3e5-4686-abdc-8adb8f2facdf" />
-```
 
 Karena pengecekan ada di `komentarValidationRules` yang jalan **di server**
 (bukan cuma atribut `required` di HTML atau validasi JS di browser), request
@@ -234,9 +224,7 @@ curl -X POST http://localhost:3000/komentar \
 | `message` | `"  Produk ini <b>lumayan</b> bagus juga  "` | `"Produk ini &amp;lt;b&amp;gt;lumayan&amp;lt;&amp;#x2F;b&amp;gt; bagus juga"` (tampil sbg `Produk ini &lt;b&gt;lumayan&lt;/b&gt; bagus juga` di HTML — tag `<b>` sudah jadi teks, bukan elemen HTML aktif lagi) |
 | `email` | `" Budi.S+promo@GMAIL.com "` | `"budis+promo@gmail.com"` (lowercase, spasi hilang) |
 
-```
 <img width="956" height="476" alt="Screenshot 2026-08-25 171547" src="https://github.com/user-attachments/assets/5f547b24-beab-42bf-9448-bc158647844a" />
-```
 
 ### 3) Escape saat render (anti-XSS)
 
@@ -270,9 +258,7 @@ Hasil render di HTML (bukan lewat DevTools, ini betulan yang dikirim server):
 Payload tampil sebagai **teks biasa** (`<script>alert('XSS dari '+document.cookie)</script>`
 apa adanya di layar), **tidak muncul popup `alert()`** sama sekali.
 
-```
 <img width="1920" height="1080" alt="Screenshot (836)" src="https://github.com/user-attachments/assets/db44ef31-0aeb-4459-a4d9-5d60e239629b" />
-```
 
 *Catatan:* di implementasi ini payload malah ter-escape **dua kali** (sekali
 oleh `.escape()` saat sanitasi sebelum disimpan, sekali lagi oleh `<%= %>`
@@ -341,11 +327,9 @@ Hasil: server tetap merespons normal (**HTTP 200**, halaman `/komentar`
 ter-render biasa) dengan **`0 komentar`** — tidak ada error SQL yang bocor ke
 user, dan tentu saja tidak ada data tabel `users` yang ikut tertampil.
 
-```
 <img width="959" height="476" alt="Screenshot 2026-08-25 171905" src="https://github.com/user-attachments/assets/0600568b-d1ea-4bcb-808e-2085a4b1560c" />
 
 <img width="959" height="474" alt="image" src="https://github.com/user-attachments/assets/ba232794-4b52-4e9c-b048-50c7059c4e09" />
-```
 
 ---
 
