@@ -8,13 +8,6 @@
 
 **Repo asal:** https://github.com/Kakonoomoide/PAW-ANTARA-WEEK12
 
-> Catatan cara baca dokumen ini: setiap bukti di bawah aslinya dijalanin & di-screenshot
-> langsung di browser (`http://localhost:3000/...`) sesuai instruksi tugas. Supaya gampang
-> direproduksi ulang oleh siapa aja yang mau ngecek, tiap bagian juga saya sertain
-> **request persis yang dikirim** (method + payload) dan **potongan HTML hasil render**
-> yang jadi dasar screenshot-nya — tinggal buka URL yang sama di browser buat lihat
-> versi visualnya.
-
 ---
 
 ## Bagian 1 — Eksplorasi Kerentanan (`secure-search-app`)
